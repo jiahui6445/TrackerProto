@@ -24,6 +24,7 @@ android {
 
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation 'com.android.support:appcompat-v7:28.0.0'
 
   compile files('libs/BloodyJar_release_V1.0.8.jar')
 }

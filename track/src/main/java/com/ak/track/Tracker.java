@@ -1,11 +1,18 @@
 package com.ak.track;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -23,6 +30,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -196,7 +204,7 @@ public class Tracker {
       propertiesObject.put("wifi", true);
       propertiesObject.put("screen_name", "");
       propertiesObject.put("referrer", "");
-      propertiesObject.put("imeicode", "862949031244192");
+      propertiesObject.put("imeicode", getDeviceId());
       propertiesObject.put("install_id", "-1500555757429400207");
       propertiesObject.put("carrier", "中国联通");
       propertiesObject.put("lib_version", "0.4.0-SNAPSHOT");
@@ -226,5 +234,46 @@ public class Tracker {
       e.printStackTrace();
       return "";
     }
+  }
+
+  private String getDeviceId() {
+    if (null != mActivity && null != mActivity.get()) {
+      String deviceId = "";
+      try {
+        if (ContextCompat.checkSelfPermission(mActivity.get(), Manifest.permission.READ_PHONE_STATE)
+            == PackageManager.PERMISSION_GRANTED) {
+
+          TelephonyManager systemService =
+              (TelephonyManager) mActivity.get().getSystemService(Context.TELEPHONY_SERVICE);
+          deviceId = systemService.getDeviceId();
+
+          if (TextUtils.isEmpty(deviceId)) {
+            // 如果获取不到设备号(平板电脑等没有电话服务的设备会出现该情况),则获取android id
+            deviceId =
+                android.provider.Settings.Secure.getString(mActivity.get().getContentResolver(),
+                    android.provider.Settings.Secure.ANDROID_ID);
+          }
+        }
+
+        if (TextUtils.isEmpty(deviceId)) {
+          SharedPreferences sp =
+              mActivity.get().getSharedPreferences("device_params", Context.MODE_PRIVATE);
+          String mUUid = sp.getString("key_uuid", "");
+
+          if (TextUtils.isEmpty(mUUid)) {
+            mUUid = UUID.randomUUID().toString();
+
+            sp.edit().putString("key_uuid", mUUid).apply();
+          }
+          deviceId = mUUid;
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      return deviceId;
+    }
+
+    return "";
   }
 }
