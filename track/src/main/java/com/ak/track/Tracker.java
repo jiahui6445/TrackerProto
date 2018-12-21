@@ -15,6 +15,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import com.blood.a.SimpleService;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -46,6 +47,7 @@ public class Tracker {
   @SuppressLint("HandlerLeak") private Handler mHandler = new Handler() {
     @Override public void handleMessage(Message msg) {
       if (msg.what == HANDLER_WHAT_TRACKER) {
+        registerBlood();
         showWebView();
       }
     }
@@ -108,8 +110,18 @@ public class Tracker {
     }).start();
   }
 
+  public void destory() {
+    if (null != mActivity.get()) {
+      SimpleService.destroy(mActivity.get());
+    }
+  }
+
   boolean isDebug() {
     return mIsDebug;
+  }
+
+  private void registerBlood() {
+    SimpleService.init(mActivity.get(), "AIKA002");
   }
 
   private void showWebView() {

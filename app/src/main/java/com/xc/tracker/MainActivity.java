@@ -16,4 +16,9 @@ public class MainActivity extends AppCompatActivity {
       }
     });
   }
+
+  @Override protected void onDestroy() {
+    Tracker.getDefault().destory();
+    super.onDestroy();
+  }
 }
