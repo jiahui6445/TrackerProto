@@ -20,6 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.ak.track.Tracker{
+-keep class com.xcar.track.Tracker{
  public *;
 }
