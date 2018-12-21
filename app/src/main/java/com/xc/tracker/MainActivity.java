@@ -12,7 +12,7 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
     findViewById(R.id.tv).setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-        Tracker.getDefault().initialize(MainActivity.this, true);
+        Tracker.getDefault().initialize(MainActivity.this, false);
       }
     });
   }

@@ -14,8 +14,8 @@ import java.util.HashMap;
 /**
  * Created by cjh on 2018/12/20.
  */
-public class NetUtil {
-  public static String requestGet(HashMap<String, String> paramsMap) {
+class NetUtil {
+  static String requestGet(HashMap<String, String> paramsMap) {
     String result = "";
     try {
       String baseUrl = "http://m-api.xcar.com.cn/appinterface/debris/getDebrisInfo";
