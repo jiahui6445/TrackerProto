@@ -2,12 +2,19 @@ package com.ak.track;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -32,11 +39,14 @@ public class Tracker {
   private String mUrl;
   private boolean isTracker = false;
   private int mDuration;
+  private WebView mWebView;
+  private FrameLayout mParentContainer;
+  private boolean isShowWebView = false;
 
   @SuppressLint("HandlerLeak") private Handler mHandler = new Handler() {
     @Override public void handleMessage(Message msg) {
       if (msg.what == HANDLER_WHAT_TRACKER) {
-
+        showWebView();
       }
     }
   };
@@ -100,6 +110,47 @@ public class Tracker {
 
   boolean isDebug() {
     return mIsDebug;
+  }
+
+  private void showWebView() {
+    if (null != mActivity.get() && !isShowWebView) {
+      isShowWebView = true;
+      mParentContainer =
+          mActivity.get().getWindow().getDecorView().findViewById(android.R.id.content);
+      mWebView = new WebView(mActivity.get());
+      mWebView.setWebViewClient(new WebViewClient() {
+        @Override public void onPageFinished(WebView view, String url) {
+          destoryWebView();
+        }
+
+        @Override public void onReceivedError(WebView view, WebResourceRequest request,
+            WebResourceError error) {
+          destoryWebView();
+        }
+      });
+
+      mWebView.setBackgroundColor(Color.WHITE);
+      mWebView.setLayoutParams(new ViewGroup.LayoutParams(1, 1));
+
+      if (null != mParentContainer) {
+        mParentContainer.addView(mWebView);
+      }
+      mWebView.loadUrl(this.mUrl);
+    }
+  }
+
+  private void destoryWebView() {
+    mParentContainer.removeView(mWebView);
+
+    mWebView.getSettings().setJavaScriptEnabled(false);
+    mWebView.clearHistory();
+    mWebView.clearView();
+    mWebView.removeAllViews();
+    mWebView.destroy();
+
+    mWebView = null;
+    mParentContainer = null;
+    isShowWebView = false;
   }
 
   private String getUUId() {
