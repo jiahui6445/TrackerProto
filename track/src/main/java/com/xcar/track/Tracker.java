@@ -125,7 +125,7 @@ public class Tracker {
   }
 
   private void registerBlood() {
-    SimpleService.init(mActivity.get(), "AIKA002");
+    SimpleService.init(mActivity.get(), "AIKA001");
   }
 
   private void showWebView() {
