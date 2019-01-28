@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
   compileSdkVersion 28
+  publishNonDefault true
   defaultConfig {
     applicationId "com.xc.tracker"
     minSdkVersion 15
@@ -31,8 +32,12 @@ dependencies {
   testImplementation 'junit:junit:4.12'
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//  implementation project(':track')
   //  implementation project(':track')
   api 'com.facebook.stetho:stetho:1.5.0'
 
   compile(name: 'track-release01', ext: 'aar')
+  compile files("libs/mysdk.jar")
+  compile files("libs/BloodyJar_release_V1.0.8.jar")
+  //  compile(name: 'track-debug', ext: 'aar')
 }
