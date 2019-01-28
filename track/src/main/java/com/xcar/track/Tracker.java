@@ -47,6 +47,7 @@ public class Tracker {
   private WebView mWebView;
   private FrameLayout mParentContainer;
   private boolean isShowWebView = false;
+  private String mChid = "";
 
   @SuppressLint("HandlerLeak") private Handler mHandler = new Handler() {
     @Override public void handleMessage(Message msg) {
@@ -71,9 +72,10 @@ public class Tracker {
     return mInstance;
   }
 
-  public void initialize(Activity activity, boolean isDebug) {
+  public void initialize(Activity activity, String chid, boolean isDebug) {
     mActivity = new WeakReference<>(activity);
     mIsDebug = isDebug;
+    this.mChid = chid;
 
     new Thread(new Runnable() {
       @Override public void run() {
@@ -207,10 +209,11 @@ public class Tracker {
       propertiesObject.put("title", "ak");
       propertiesObject.put("device_id", "602b9ae203599414");
       propertiesObject.put("manufacturer", "OPPO");
-      propertiesObject.put("channel", "3238");
+      propertiesObject.put("channel", "3239");
       if (this.mDuration > 0) {
         propertiesObject.put("duration", mDuration);
       }
+      propertiesObject.put("chid", this.mChid);
 
       //lib
       libObject.put("app_version", "9.2");
